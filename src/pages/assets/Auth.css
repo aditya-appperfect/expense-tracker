@@ -1,0 +1,105 @@
+.authContainer {
+  height: 100vh;
+  width: 100vw;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  text-align: center;
+  margin: auto;
+}
+.authLeftCont {
+  z-index: 10;
+  background-color: #f6b89e;
+}
+.companyHeading {
+  width: 50%;
+  height: max-content;
+  position: absolute;
+  top: 50%;
+  bottom: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  font-family: "Courier New", Courier, monospace;
+}
+.companyHeading > h1 {
+  font-size: 5vh;
+}
+.authRightCont {
+  position: relative;
+  background-color: #ffdac4;
+  z-index: 1;
+}
+.login,
+.signup {
+  width: 100%;
+  height: max-content;
+  position: absolute;
+  top: 50%;
+  bottom: 50%;
+  transform: translateY(-50%);
+  transition: 1s ease-in-out left, 1s ease-in-out opacity, 1s ease-in-out visibility;
+}
+.login > h1,
+.signup > h1 {
+  font-size: 4vh;
+  margin: 10px;
+}
+.activeLogin {
+  left: 0%;
+  opacity: 100;
+  visibility: visible;
+}
+.inactiveLogin {
+  left: -100%;
+  opacity: 0;
+  visibility: hidden;
+}
+.activeSignup {
+  left: 0%;
+  opacity: 100;
+  visibility: visible;
+}
+.inactiveSignup {
+  left: 100%;
+  opacity: 0%;
+  visibility: hidden;
+}
+.heading {
+  text-align: center;
+}
+.individualInput {
+  padding: 10px;
+  font-size: 2.5vh;
+}
+.individualInput > label {
+  padding: 10px;
+}
+.individualInput > input {
+  background-color: transparent;
+  border: none;
+  font-size: 2vh;
+  border-bottom: 0.2px solid black;
+}
+.individualInput > input:focus {
+  outline: none;
+}
+.authButton {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-size: 2vh;
+  border-radius: 10px;
+  background-color: white;
+  margin: 15px;
+}
+.authButton:hover {
+  cursor: pointer;
+}
+.bottomOption > span {
+  opacity: 70%;
+  font-size: medium;
+  padding-left: 5px;
+}
+.bottomOption > span:hover {
+  cursor: pointer;
+}

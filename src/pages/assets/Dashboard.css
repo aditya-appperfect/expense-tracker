@@ -1,0 +1,113 @@
+body {
+  background-color: #ffdac4;
+}
+.button {
+  appearance: none;
+  background-color: white;
+  border: 0.1px solid black;
+  border-radius: 10px;
+  padding: 5px;
+  font-size: medium;
+  width: 80px;
+  height: 40px;
+}
+.button:hover {
+  cursor: pointer;
+}
+.income {
+  color: green;
+}
+.expense {
+  color: red;
+}
+.tab {
+  border: black solid 1px;
+  padding: 3px;
+  border-radius: 10%;
+  padding: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
+  font-size: medium;
+  width: 80px;
+  height: 40px;
+}
+.tab:hover {
+  cursor: pointer;
+}
+.selected {
+  background-color: rgb(149, 149, 149);
+  color: white;
+}
+.container {
+  background-color: #faf9f6;
+  padding-left: 3vw;
+  padding-right: 3vw;
+  padding-top: 1vh;
+  height: 90vh;
+  width: 50vw;
+  margin: auto;
+  margin-top: 5vh;
+  border-radius: 3%;
+}
+.heading {
+  text-align: center;
+}
+.content {
+  font-size: x-large;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 0.5fr;
+  margin: auto;
+}
+.content > * {
+  margin: 10px;
+  padding: 5px;
+}
+.tabContainer {
+  margin: 10px;
+}
+.dataContainer {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 0.2fr 1fr 0.5fr 0.1fr;
+}
+.dataCell {
+  border: solid 0.2px black;
+  text-align: center;
+  padding: 10px;
+}
+.tableContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 80%;
+}
+.deleteButton {
+  color: red;
+  font-size: 20px;
+  padding-left: 10px;
+}
+.deleteButton:hover {
+  cursor: pointer;
+}
+.inputCont {
+  text-align: center;
+}
+.dropdown {
+  appearance: none;
+  width: 100%;
+  padding: 5px;
+  background-color: #fff;
+  border: 1px solid #caced1;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+}
+.table-green {
+  color: green;
+}
+.table-red {
+  color: red;
+}
+.table-black {
+  color: black;
+}
