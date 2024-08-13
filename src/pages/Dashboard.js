@@ -10,7 +10,6 @@ import { ExpenseContext } from "../context/ExpenseContext";
 import { useNavigate } from "react-router-dom";
 import { DeleteOutlined } from "@ant-design/icons";
 import { Input, Table } from "antd";
-import { Color } from "antd/es/color-picker";
 
 function Dashboard() {
   const { state, dispatch } = useContext(ExpenseContext);
@@ -76,7 +75,7 @@ function Dashboard() {
   }, [filterExp]);
 
   let dataSource = [];
-  filterExp.map((exp, index) => {
+  filterExp?.map((exp, index) => {
     dataSource.push({
       key: index,
       Id: exp.id,
@@ -227,14 +226,6 @@ function Dashboard() {
         </span>
       </div>
       <Table
-        // rowClassName={(record) => {
-        //   let type = state.allExp.map((ele) => {
-        //     if (ele.id == record.Id) {
-        //       return ele.type;
-        //     }
-        //   });
-        //   return type == "income" ? "table-green" : "table-red";
-        // }}
         rowClassName={(record) => {
           return record.key == "Total"
             ? "table-black"
@@ -246,7 +237,7 @@ function Dashboard() {
         columns={columns}
         pagination={{ pageSize: 10, position: ["bottomCenter"] }}
       />
-      ;
+      
     </div>
   );
 }
