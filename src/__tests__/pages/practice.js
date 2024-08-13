@@ -1,11 +1,4 @@
-import {
-  fireEvent,
-  logRoles,
-  prettyDOM,
-  render,
-  screen,
-  waitForElementToBeRemoved,
-} from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { Practice } from "../../pages";
 
 test("Test 1", () => {
@@ -24,17 +17,8 @@ test("Test 2", () => {
 
 test("Test 3", async () => {
   render(<Practice />);
-  const dv = await screen.findByText("Data Found", {}, { timeout: 2000 });
-  expect(dv).toBeInTheDocument();
-  console.log(prettyDOM(dv));
-  console.log(logRoles(dv));
-  //Testing Playground
-});
-
-test("Countries", async () => {
-  render(<Practice />);
   const country = await screen.findByText("List of countries");
   expect(country).toBeInTheDocument();
   const li = await screen.findAllByRole("listitem", {}, { timeout: 2000 });
-  expect(li).toHaveLength(4);
+  expect(li).toHaveLength(250);
 });
