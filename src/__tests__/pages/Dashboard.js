@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { Auth, Dashboard, ExpensePage } from "../../pages";
+import { Auth, Dashboard, Practice } from "../../pages";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import bcrypt from "bcryptjs-react";
 
@@ -32,7 +32,7 @@ beforeAll(() => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Dashboard />} />
-        <Route path="/expense" element={<ExpensePage />} />
+        <Route path="/practice" element={<Practice />} />
         <Route path="/auth" element={<Auth />} />
       </Routes>
     </BrowserRouter>

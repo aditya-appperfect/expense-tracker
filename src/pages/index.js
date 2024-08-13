@@ -1,5 +1,5 @@
 import Dashboard from "./Dashboard";
-import ExpensePage from "./ExpensePage";
+import Practice from "./Practice";
 import Auth from "./Auth";
 
-export { Dashboard, ExpensePage, Auth }
+export { Dashboard, Practice, Auth }

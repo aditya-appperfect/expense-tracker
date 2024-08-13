@@ -1,6 +1,6 @@
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
-import { Dashboard, ExpensePage, Auth } from "./pages";
+import { Dashboard, Practice, Auth } from "./pages";
 import { ExpenseProvider } from './context/ExpenseContext'
 //Dashboard - graphs
 //Expense Page -  edit, tags, search, filter
@@ -10,7 +10,7 @@ function App() {
     <ExpenseProvider>
       <Routes>
         <Route path="/" element={<Dashboard />} />
-        <Route path="/expense" element={<ExpensePage />} />
+        <Route path="/practice" element={<Practice />} />
         <Route path="/auth" element={<Auth />} />
       </Routes>
     </ExpenseProvider>
