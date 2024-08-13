@@ -5,13 +5,6 @@
 import "@testing-library/jest-dom";
 import { server } from "./mockServices/server";
 
-const { TextDecoder, TextEncoder } = require('node:util')
- 
-Object.defineProperties(globalThis, {
-  TextDecoder: { value: TextDecoder },
-  TextEncoder: { value: TextEncoder },
-})
-
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
