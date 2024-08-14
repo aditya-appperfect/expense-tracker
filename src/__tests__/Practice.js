@@ -1,9 +1,10 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { Practice } from "../../pages";
+import { Practice } from "../pages";
+import userEvent from "@testing-library/user-event";
 
-test("Test 1", () => {
+test("Test 1",async () => {
   render(<Practice />);
-  fireEvent.click(screen.getByRole("button", { name: "remove message" }));
+  await userEvent.click(screen.getByRole("button", { name: "remove message" }));
   console.log("Removed");
   const targetElement = screen.queryByText(/ExpensePage/i);
   expect(targetElement).not.toBeInTheDocument();

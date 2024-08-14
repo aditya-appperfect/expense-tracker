@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { Auth, Dashboard, Practice } from "../../pages";
+import { Auth, Dashboard, Practice } from "../pages";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import bcrypt from "bcryptjs-react";
 
@@ -10,8 +10,8 @@ beforeAll(() => {
       matches: false,
       media: query,
       onchange: null,
-      addListener: jest.fn(), // Deprecated
-      removeListener: jest.fn(), // Deprecated
+      addListener: jest.fn(),
+      removeListener: jest.fn(),
       addEventListener: jest.fn(),
       removeEventListener: jest.fn(),
       dispatchEvent: jest.fn(),
