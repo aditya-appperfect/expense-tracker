@@ -12,7 +12,11 @@ function Practice() {
     const data = await res.json();
     setCountry(data);
   }, []);
-  fetchCountries();
+  
+  useEffect(() => {
+    fetchCountries();
+  }, []);
+
   const handleClick = () => {
     setIsVisible(false);
   };

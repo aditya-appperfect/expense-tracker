@@ -1,13 +1,4 @@
-
-const { TextDecoder, TextEncoder } = require('node:util')
- 
-Object.defineProperties(globalThis, {
-  TextDecoder: { value: TextDecoder },
-  TextEncoder: { value: TextEncoder },
-})
-
-
 import { setupServer } from "msw/node";
-import { handler } from "./handler";
+import { handlers } from "./handlers";
 
-export const server = setupServer(...handler)
+export const server = setupServer(...handlers);

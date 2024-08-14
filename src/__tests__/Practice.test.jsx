@@ -22,5 +22,5 @@ test("Test 3", async () => {
   const country = await screen.findByText("List of countries");
   expect(country).toBeInTheDocument();
   const li = await screen.findAllByRole("listitem", {}, { timeout: 2000 });
-  expect(li).toHaveLength(250);
+  expect(li).toHaveLength(4);
 });
