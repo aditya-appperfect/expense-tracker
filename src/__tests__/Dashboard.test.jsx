@@ -1,20 +1,23 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { Auth, Dashboard, Practice } from "../pages";
+import Practice from "../pages/Practice";
+import Auth from "../pages/Auth";
+import Dashboard from "../pages/Dashboard";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import bcrypt from "bcryptjs-react";
+import { expect, test, vitest } from "vitest";
 
 beforeAll(() => {
   Object.defineProperty(window, "matchMedia", {
     writable: true,
-    value: jest.fn().mockImplementation((query) => ({
+    value: vitest.fn().mockImplementation((query) => ({
       matches: false,
       media: query,
       onchange: null,
-      addListener: jest.fn(),
-      removeListener: jest.fn(),
-      addEventListener: jest.fn(),
-      removeEventListener: jest.fn(),
-      dispatchEvent: jest.fn(),
+      addListener: vitest.fn(),
+      removeListener: vitest.fn(),
+      addEventListener: vitest.fn(),
+      removeEventListener: vitest.fn(),
+      dispatchEvent: vitest.fn(),
     })),
   });
 
@@ -52,10 +55,3 @@ test("renders expense tracker", () => {
   const btn = screen.getByRole("button", { name: "Add" });
   expect(btn).toBeInTheDocument();
 });
-
-// test('calls onClick prop when clicked', () => {
-//   const handleClick = jest.fn()
-//   render(<button onClick={handleClick}>Click Me</button>)
-//   fireEvent.click(screen.getByText(/click me/i))
-//   expect(handleClick).toHaveBeenCalledTimes(1)
-// })

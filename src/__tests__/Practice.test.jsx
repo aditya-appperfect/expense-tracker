@@ -1,8 +1,9 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { Practice } from "../pages";
+import { expect, test } from "vitest";
+import { render, screen } from "@testing-library/react";
+import Practice from "../pages/Practice";
 import userEvent from "@testing-library/user-event";
 
-test("Test 1",async () => {
+test("Test 1", async () => {
   render(<Practice />);
   await userEvent.click(screen.getByRole("button", { name: "remove message" }));
   console.log("Removed");

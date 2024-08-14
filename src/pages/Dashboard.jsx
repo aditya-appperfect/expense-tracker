@@ -1,11 +1,5 @@
 import "./assets/Dashboard.css";
-import React, {
-  useCallback,
-  useContext,
-  useMemo,
-  useEffect,
-  useState,
-} from "react";
+import React, { useContext, useMemo, useEffect, useState, useCallback } from "react";
 import { ExpenseContext } from "../context/ExpenseContext";
 import { useNavigate } from "react-router-dom";
 import { DeleteOutlined } from "@ant-design/icons";
@@ -26,7 +20,7 @@ function Dashboard() {
     }
   }, []);
 
-  const handleAdd = useCallback(() => {
+  const handleAdd = () => {
     const newExpense = {
       title: newDetails.title,
       type: newDetails.type,
@@ -38,7 +32,7 @@ function Dashboard() {
       amount: null,
       type: "expense",
     });
-  }, [newDetails]);
+  };
 
   const handleDelete = (id, amount, type) => {
     dispatch({ type: "Delete", payload: { id, amount, type } });
@@ -237,7 +231,6 @@ function Dashboard() {
         columns={columns}
         pagination={{ pageSize: 10, position: ["bottomCenter"] }}
       />
-      
     </div>
   );
 }
