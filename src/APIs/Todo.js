@@ -2,7 +2,7 @@ const delay = () => new Promise((res) => setTimeout(() => res(), 800));
 
 const giveErrorChance = () => {
   const chance = Math.random();
-  if (chance > 0.5) {
+  if (chance < 0.5) {
     throw Error("Some thing went wrong, (It is to test SWR Rollback)");
   }
   return;
@@ -12,7 +12,7 @@ export const getTodo = async () => {
   await delay();
   const res = await fetch(process.env.REACT_APP_API_URL, { method: "GET" });
   const data = await res.json();
-  return data.sort((a, b) => b.id - a.id);
+  return data.sort((a, b) => parseInt(b.id, 16) - parseInt(a.id, 16));
 };
 
 export const addTodo = async ({ userId, title, completed }) => {

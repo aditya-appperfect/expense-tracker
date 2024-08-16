@@ -23,19 +23,23 @@ function Todo() {
     try {
       await mutate(process.env.REACT_APP_API_URL, addTodo(newTodo), {
         optimisticData: (todos) =>
-          [...todos, newTodo].sort((a, b) => b.id - a.id),
+          [...todos, newTodo].sort(
+            (a, b) => parseInt(b.id, 16) - parseInt(a.id, 16)
+          ),
         rollbackOnError: true,
         populateCache: (added, todos) =>
-          [...todos, added].sort((a, b) => b.id - a.id),
+          [...todos, added].sort(
+            (a, b) => parseInt(b.id, 16) - parseInt(a.id, 16)
+          ),
         revalidate: false,
       });
       toast.success("Success! Added new item.", {
         duration: 1000,
         icon: "🎉",
       });
-    } catch {
-      toast.error("Failed to add the new item.", {
-        duration: 1000,
+    } catch (err) {
+      toast.error(err.message, {
+        duration: 2000,
       });
     }
     setNewTodo({
@@ -49,19 +53,23 @@ function Todo() {
     try {
       await mutate(process.env.REACT_APP_API_URL, deleteTodo(id), {
         optimisticData: (todos) =>
-          todos.filter((t) => t.id != id).sort((a, b) => b.id - a.id),
+          todos
+            .filter((t) => t.id != id)
+            .sort((a, b) => parseInt(b.id, 16) - parseInt(a.id, 16)),
         rollbackOnError: true,
         populateCache: (res, todos) =>
-          todos.filter((t) => t.id != id).sort((a, b) => b.id - a.id),
+          todos
+            .filter((t) => t.id != id)
+            .sort((a, b) => parseInt(b.id, 16) - parseInt(a.id, 16)),
         revalidate: false,
       });
       toast.success("Success! Deleted item.", {
         duration: 1000,
         icon: "🎉",
       });
-    } catch {
-      toast.error("Failed to delete the item.", {
-        duration: 1000,
+    } catch (err) {
+      toast.error(err.message, {
+        duration: 2000,
       });
     }
   };
@@ -76,7 +84,7 @@ function Todo() {
         optimisticData: (todos) => {
           let restTodos = todos.filter((t) => t.id != todo.id);
           let updatedTodos = [...restTodos, newTodo].sort(
-            (a, b) => b.id - a.id
+            (a, b) => parseInt(b.id, 16) - parseInt(a.id, 16)
           );
           return updatedTodos;
         },
@@ -84,7 +92,7 @@ function Todo() {
         populateCache: (res, todos) => {
           let restTodos = todos.filter((t) => t.id != todo.id);
           let updatedTodos = [...restTodos, newTodo].sort(
-            (a, b) => b.id - a.id
+            (a, b) => parseInt(b.id, 16) - parseInt(a.id, 16)
           );
           return updatedTodos;
         },
@@ -94,9 +102,9 @@ function Todo() {
         duration: 1000,
         icon: "🎉",
       });
-    } catch {
-      toast.error("Failed to update the item.", {
-        duration: 1000,
+    } catch (err) {
+      toast.error(err.message, {
+        duration: 2000,
       });
     }
   };
