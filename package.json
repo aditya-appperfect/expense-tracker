@@ -9,16 +9,19 @@
     "bcryptjs-react": "^2.4.6",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-hot-toast": "^2.4.1",
     "react-router-dom": "^6.26.0",
     "react-scripts": "5.0.1",
+    "swr": "^2.2.5",
     "web-vitals": "^2.1.4"
   },
+  "proxy": "http://localhost:3500",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "test-vitest": "vitest watch",
-    "eject": "react-scripts eject"
+    "test": "vitest watch",
+    "eject": "react-scripts eject",
+    "db": "npx json-server -w data/db.json -p 3500"
   },
   "eslintConfig": {
     "extends": [

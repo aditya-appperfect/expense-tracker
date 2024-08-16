@@ -1,21 +1,20 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState } from "react";
+import useSWR from "swr";
+
+const fetcher = async (args) => {
+  const [url, met] = args;
+  const response = await fetch(url, { method: met });
+  const data = await response.json();
+  return data;
+};
 
 function Practice() {
   const [isVisible, setIsVisible] = useState(true);
-  const [data, setData] = useState(false);
-  const [country, setCountry] = useState([]);
 
-  const fetchCountries = useCallback(async () => {
-    const res = await fetch("https://restcountries.com/v3.1/all", {
-      method: "GET",
-    });
-    const data = await res.json();
-    setCountry(data);
-  }, []);
-  
-  useEffect(() => {
-    fetchCountries();
-  }, []);
+  const { data, error } = useSWR(
+    ["https://restcountries.com/v3.1/all", "GET"],
+    fetcher
+  );
 
   const handleClick = () => {
     setIsVisible(false);
@@ -27,11 +26,17 @@ function Practice() {
       <button onClick={handleClick}>remove message</button>
       <button disabled>Disabled Button</button>
       <h1>List of countries</h1>
-      <ul>
-        {country?.map((c) => {
-          return <li key={c.name.common}>{c.name.common}</li>;
-        })}
-      </ul>
+      {!data && !error ? (
+        <div>Loading...</div>
+      ) : error ? (
+        <div>Error: {error.message}</div>
+      ) : (
+        <ul>
+          {data?.map((c) => (
+            <li key={c.name.common}>{c.name.common}</li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

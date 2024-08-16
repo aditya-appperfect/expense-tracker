@@ -1,0 +1,64 @@
+{
+  "todos": [
+    {
+      "userId": 1,
+      "id": "1",
+      "title": "Finish work",
+      "completed": true
+    },
+    {
+      "userId": 1,
+      "id": "2",
+      "title": "Buy groceries",
+      "completed": true
+    },
+    {
+      "userId": 1,
+      "id": "3",
+      "title": "Call mom",
+      "completed": false
+    },
+    {
+      "userId": 1,
+      "id": "4",
+      "title": "Prepare presentation",
+      "completed": true
+    },
+    {
+      "userId": 1,
+      "id": "5",
+      "title": "Clean the house",
+      "completed": false
+    },
+    {
+      "userId": 1,
+      "id": "6",
+      "title": "Read a book",
+      "completed": true
+    },
+    {
+      "userId": 1,
+      "id": "7",
+      "title": "Workout",
+      "completed": false
+    },
+    {
+      "userId": 1,
+      "id": "8",
+      "title": "Water the plants",
+      "completed": true
+    },
+    {
+      "userId": 1,
+      "id": "9",
+      "title": "Write a blog post",
+      "completed": true
+    },
+    {
+      "id": "76d4",
+      "userId": 1,
+      "title": "Plan the weekend trip",
+      "completed": false
+    }
+  ]
+}
