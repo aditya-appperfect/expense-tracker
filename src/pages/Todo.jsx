@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { addTodo, updateTodo, getTodo, deleteTodo } from "../APIs/Todo";
 import useSWR, { mutate } from "swr";
 import toast, { Toaster } from "react-hot-toast";
-import "./assets/Todo.css";
+import "../assets/Todo.css";
 
 function Todo() {
   const {

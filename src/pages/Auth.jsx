@@ -1,7 +1,8 @@
 import React, { useRef, useState } from "react";
-import "./assets/Auth.css";
+import "../assets/Auth.css";
 import { useNavigate } from "react-router-dom";
 import bcrypt from "bcryptjs-react";
+import { loginUser, signupUser } from "../APIs/Auth";
 
 function Auth() {
   const nav = useNavigate();
@@ -9,11 +10,11 @@ function Auth() {
   const signup = useRef(null);
 
   const [loginCred, setLoginCred] = useState({
-    username: "",
+    email: "",
     password: "",
   });
   const [signupCred, setSignupCred] = useState({
-    username: "",
+    email: "",
     password: "",
   });
 
@@ -31,55 +32,23 @@ function Auth() {
     }
   };
 
-  const handleSignup = () => {
-    const data = {
-      username: signupCred.username,
-      password: bcrypt.hashSync(
-        signupCred.password,
-        "$2a$10$CwTycUXWue0Thq9StjUM0u"
-      ),
-    };
-    const prevAuth = JSON.parse(localStorage.getItem("auth"));
-    if (!prevAuth) {
-      localStorage.setItem("auth", JSON.stringify([data]));
+  const handleSignup = async () => {
+    const res = await signupUser(signupCred.email, signupCred.password);
+    if (res.status == "success") {
+      localStorage.setItem("Token", JSON.stringify(res.Token));
       nav("/");
-      localStorage.setItem("Token", "LoggedIn");
-      return;
     }
-    let flag = 0;
-    prevAuth?.map((prev) => {
-      if (prev.username == data.username) {
-        flag = 1;
-        return;
-      }
-    });
-    if (flag) {
-      alert("Username exists");
-      return;
-    }
-    prevAuth.push(data);
-    localStorage.removeItem("auth");
-    localStorage.setItem("auth", JSON.stringify(prevAuth));
-    nav("/");
-    localStorage.setItem("Token", "LoggedIn");
   };
 
-  const handleLogin = () => {
-    const data = JSON.parse(localStorage.getItem("auth"));
-    let flag = 0;
-    data?.map((d) => {
-      if (
-        d.username == loginCred.username &&
-        bcrypt.compareSync(loginCred.password, d.password)
-      ) {
-        nav("/");
-        localStorage.setItem("Token", "LoggedIn");
-        flag = 1;
-        return;
-      }
-    });
-    if (!flag) {
-      alert("Username or password incorrect");
+  const handleLogin = async () => {
+    const res = await loginUser(loginCred.email, loginCred.password);
+    if (res.status == "success") {
+      localStorage.setItem("Token", JSON.stringify(res.Token));
+      nav("/");
+    } else {
+      setLoginCred((prev) => {
+        return { ...prev, password: "" };
+      });
     }
   };
 
@@ -95,16 +64,16 @@ function Auth() {
           <h1 className="heading">Login</h1>
           <div>
             <div className="individualInput">
-              <label htmlFor="login-username">Username</label>
+              <label htmlFor="login-email">Email</label>
               <input
-                id="login-username"
+                id="login-email"
                 type="text"
-                value={loginCred.username}
+                value={loginCred.email}
                 onChange={(e) => {
                   setLoginCred((prev) => {
                     return {
                       ...prev,
-                      username: e.target.value,
+                      email: e.target.value,
                     };
                   });
                 }}
@@ -149,14 +118,14 @@ function Auth() {
           <h1>Signup</h1>
           <div>
             <div className="individualInput">
-              <label>Username</label>
+              <label>Email</label>
               <input
-                value={signupCred.username}
+                value={signupCred.email}
                 onChange={(e) => {
                   setSignupCred((prev) => {
                     return {
                       ...prev,
-                      username: e.target.value,
+                      email: e.target.value,
                     };
                   });
                 }}

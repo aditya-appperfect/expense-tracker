@@ -7,7 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 import { preload } from 'swr'
 import { getTodo} from './APIs/Todo'
 
-preload(process.env.REACT_APP_API_URL, getTodo)
+// preload(process.env.REACT_APP_API_URL, getTodo)
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

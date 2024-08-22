@@ -1,134 +1,104 @@
-import "./assets/Dashboard.css";
-import React, { useContext, useMemo, useEffect, useState, useCallback } from "react";
+import "../assets/Dashboard.css";
+import React, { useContext, useEffect, useState } from "react";
 import { ExpenseContext } from "../context/ExpenseContext";
 import { useNavigate } from "react-router-dom";
 import { DeleteOutlined } from "@ant-design/icons";
-import { Input, Table } from "antd";
+import { Input, Spin, Table } from "antd";
 
 function Dashboard() {
-  const { state, dispatch } = useContext(ExpenseContext);
   const nav = useNavigate();
-  const [newDetails, setNewDetails] = useState({
-    title: "",
-    amount: null,
-    type: "expense",
-  });
+  const { state, dispatch, handleAddExpense, handleDeleteExpense } =
+    useContext(ExpenseContext);
 
   useEffect(() => {
-    if (!localStorage.getItem("Token")) {
+    const token = JSON.parse(localStorage.getItem("Token"));
+    if (!token) {
       nav("/auth");
     }
-  }, []);
+  }, [nav]);
 
-  const handleAdd = () => {
-    const newExpense = {
+  const [activeFilter, setActiveFilter] = useState("all");
+  const [newDetails, setNewDetails] = useState({
+    title: "",
+    amount: 0,
+    exptype: "expense",
+  });
+
+  const handleAddClick = () => {
+    handleAddExpense({
       title: newDetails.title,
-      type: newDetails.type,
-      amount: newDetails.amount ?? 0,
-    };
-    dispatch({ type: "Add", payload: newExpense });
+      exptype: newDetails.exptype,
+      amount: Number(newDetails.amount),
+    });
     setNewDetails({
       title: "",
-      amount: null,
-      type: "expense",
+      amount: 0,
+      exptype: "expense",
     });
   };
 
-  const handleDelete = (id, amount, type) => {
-    dispatch({ type: "Delete", payload: { id, amount, type } });
+  const handleDeleteClick = (exp) => {
+    handleDeleteExpense(exp.expenseid, exp.amount);
   };
-
-  const handleFilterChange = useCallback((filter) => {
-    dispatch({ type: "Filter", payload: filter });
-    const tabArray = document.getElementsByClassName("tab");
-    for (let tabEle of tabArray) {
-      if (tabEle.id == filter) {
-        tabEle.classList.add("selected");
-      } else {
-        tabEle.classList.remove("selected");
-      }
-    }
-  }, []);
-
-  const filterExp = useMemo(() => {
-    if (state?.activeFilter == "all") {
-      return state?.allExp;
-    }
-    return state?.allExp?.filter((exp) => exp.type == state.activeFilter);
-  }, [state?.allExp, state?.activeFilter]);
-
-  const filterTotal = useMemo(() => {
-    if (state?.activeFilter == "all") {
-      return state.total;
-    }
-    let total = 0;
-    filterExp?.map((exp) => {
-      total += Number(exp.amount);
-    });
-    return total;
-  }, [filterExp]);
-
-  let dataSource = [];
-  filterExp?.map((exp, index) => {
-    dataSource.push({
-      key: index,
-      Id: exp.id,
-      Expense: exp.title,
-      Amount: exp.amount,
-      Type: exp.type,
-    });
-  });
-  dataSource.push({
-    key: "Total",
-    Id: "",
-    Expense: "Total",
-    Amount: filterTotal,
-  });
 
   const columns = [
     {
       title: "Id",
-      dataIndex: "Id",
-      key: "Id",
+      key: "id",
       width: 70,
       align: "center",
+      render: (text, record, index) =>
+        record.key !== "Total" ? index + 1 : null,
     },
     {
-      title: "Expense",
-      dataIndex: "Expense",
-      key: "Expense",
+      title: "Title",
+      dataIndex: "title",
+      key: "Title",
       width: 300,
     },
     {
       title: "Amount",
-      dataIndex: "Amount",
+      dataIndex: "amount",
       key: "Amount",
       width: 150,
       align: "center",
     },
     {
       title: "Type",
-      dataIndex: "Type",
-      key: "Type",
+      dataIndex: "exptype",
+      key: "exptype",
       width: 150,
       align: "center",
     },
     {
       render: (text, record) =>
-        record.key != "Total" ? (
+        record.key !== "Total" ? (
           <DeleteOutlined
             className="deleteButton"
             onClick={() => {
-              handleDelete(record.Id, record.Amount, record.Type);
+              handleDeleteClick(record);
             }}
           />
-        ) : (
-          <></>
-        ),
-      width: 10,
+        ) : null,
+      width: 50,
       align: "center",
     },
   ];
+
+  const getDataSourceWithTotal = (data) => {
+    const dataWithTotal = [
+      ...data,
+      {
+        expenseid: "Total",
+        key: "Total",
+        title: "Total",
+        amount: state.total,
+        exptype: "",
+      },
+    ];
+    return dataWithTotal;
+  };
+
   return (
     <div className="container">
       <h1 className="heading">Expense Tracker</h1>
@@ -139,15 +109,13 @@ function Dashboard() {
             type="text"
             value={newDetails.title}
             onChange={(e) => {
-              setNewDetails((prev) => {
-                return {
-                  ...prev,
-                  title: e.target.value,
-                };
-              });
+              setNewDetails((prev) => ({
+                ...prev,
+                title: e.target.value,
+              }));
             }}
             placeholder="Enter Expense title"
-          ></Input>
+          />
         </div>
         <div className="inputCont">
           <label>Amount:</label>
@@ -156,81 +124,77 @@ function Dashboard() {
             placeholder="Enter Expense Amount"
             value={newDetails.amount}
             onChange={(e) => {
-              setNewDetails((prev) => {
-                return {
-                  ...prev,
-                  amount: e.target.value,
-                };
-              });
+              setNewDetails((prev) => ({
+                ...prev,
+                amount: e.target.value,
+              }));
             }}
-          ></Input>
+          />
         </div>
         <div className="inputCont">
           <label style={{ display: "block" }}>Type:</label>
           <select
             className="dropdown"
-            value={newDetails.type}
+            value={newDetails.exptype}
             onChange={(e) => {
-              setNewDetails((prev) => {
-                return {
-                  ...prev,
-                  type: e.target.value,
-                };
-              });
+              setNewDetails((prev) => ({
+                ...prev,
+                exptype: e.target.value,
+              }));
             }}
             style={{ fontSize: "large", textAlign: "center" }}
           >
-            <option>income</option>
-            <option>expense</option>
+            <option value="income">income</option>
+            <option value="expense">expense</option>
           </select>
         </div>
         <div>
-          <button className="button" onClick={handleAdd}>
+          <button className="button" onClick={handleAddClick}>
             Add
           </button>
         </div>
       </div>
       <div className="tabContainer">
         <span
-          className="tab selected"
+          className={`tab ${activeFilter === "all" ? "selected" : ""}`}
           id="all"
-          onClick={(e) => {
-            handleFilterChange(e.target.id);
-          }}
+          onClick={() => setActiveFilter("all")}
         >
           All
         </span>
         <span
-          className="tab"
+          className={`tab ${activeFilter === "income" ? "selected" : ""}`}
           id="income"
-          onClick={(e) => {
-            handleFilterChange(e.target.id);
-          }}
+          onClick={() => setActiveFilter("income")}
         >
-          income
+          Income
         </span>
         <span
-          className="tab"
+          className={`tab ${activeFilter === "expense" ? "selected" : ""}`}
           id="expense"
-          onClick={(e) => {
-            handleFilterChange(e.target.id);
-          }}
+          onClick={() => setActiveFilter("expense")}
         >
-          expense
+          Expense
         </span>
       </div>
-      <Table
-        rowClassName={(record) => {
-          return record.key == "Total"
-            ? "table-black"
-            : record.Type == "income"
-            ? "table-green"
-            : "table-red";
-        }}
-        dataSource={dataSource}
-        columns={columns}
-        pagination={{ pageSize: 10, position: ["bottomCenter"] }}
-      />
+      {state.loading ? (
+        <div style={{ marginLeft: "25vw", marginTop: "10vh" }}>
+          <Spin></Spin>
+        </div>
+      ) : (
+        <Table
+          rowClassName={(record) =>
+            record.key === "Total"
+              ? "table-black"
+              : record.exptype === "income"
+              ? "table-green"
+              : "table-red"
+          }
+          dataSource={getDataSourceWithTotal(state.allExp)} // Use filtered data here
+          columns={columns}
+          pagination={{ pageSize: 10, position: ["bottomCenter"] }}
+        />
+      )}
     </div>
   );
 }

@@ -1,56 +1,99 @@
-import React, { createContext, useReducer } from "react";
-import { usePersistent } from "../hooks/usePersistent";
+import React, { createContext, useReducer, useEffect, useContext } from "react";
+import {
+  addExpenditure,
+  deleteExpenditure,
+  fetchExpenditure,
+} from "../APIs/Expense";
+import useSWR, { mutate } from "swr";
+import toast from "react-hot-toast";
 
 const initState = {
   allExp: [],
   total: 0,
-  activeFilter: "all",
+  loading: true,
+  error: null,
 };
+
 const reducer = (state, action) => {
   switch (action.type) {
-    case "Add":
-      const id = state.allExp.length + 1;
-      let newTotal = 0;
-      if (action.payload.type == "income") {
-        newTotal += parseInt(action.payload.amount);
-      } else {
-        newTotal -= parseInt(action.payload.amount);
-      }
-      const newExpense = [...state.allExp, { ...action.payload, id }];
+    case "SET_EXPENDITURES":
       return {
         ...state,
-        allExp: newExpense,
-        total: state.total + newTotal,
+        allExp: action.payload.exp,
+        total: action.payload.total,
+        loading: false,
+        error: null,
       };
-    case "Delete":
-      let updatedTotal = state.total;
-      if (action.payload.type == "income") {
-        updatedTotal -= parseInt(action.payload.amount);
-      } else {
-        updatedTotal += parseInt(action.payload.amount);
-      }
-      return {
-        ...state,
-        allExp: state.allExp.filter((ele) => ele.id != action.payload.id),
-        total: updatedTotal,
-      };
-    case "Filter":
-      return {
-        ...state,
-        activeFilter: action.payload,
-      };
+    case "SET_LOADING":
+      return { ...state, loading: true, error: null };
+    case "SET_ERROR":
+      return { ...state, loading: false, error: action.payload };
     default:
-      break;
+      return state;
   }
 };
 
-export const ExpenseContext = createContext("");
+export const ExpenseContext = createContext();
 
 export const ExpenseProvider = ({ children }) => {
-  const { state, dispatch } = usePersistent(reducer, initState);
+  const [state, dispatch] = useReducer(reducer, initState);
+
+  const token = JSON.parse(localStorage.getItem("Token"));
+
+  const { isLoading, error, data, mutate } = useSWR(
+    [`${process.env.REACT_APP_BACKEND_URL}/expenditure/`, token],
+    fetchExpenditure,
+    {
+      revalidateOnFocus: false,
+      onSuccess: (data) => {
+        dispatch({
+          type: "SET_EXPENDITURES",
+          payload: { exp: data.data.exp, total: data.data.total },
+        });
+      },
+      onError: (error) => {
+        dispatch({ type: "SET_ERROR", payload: error.message });
+      },
+    }
+  );
+
+  useEffect(() => {
+    if (isLoading) {
+      dispatch({ type: "SET_LOADING" });
+    }
+  }, [isLoading]);
+
+  const handleAddExpense = async (newExpense) => {
+    try {
+      await addExpenditure(token, newExpense);
+      mutate();
+      toast.success("Success! Added new expense.", {
+        duration: 1000,
+        icon: "🎉",
+      });
+    } catch (error) {
+      toast.error(error.message, {
+        duration: 2000,
+      });
+    }
+  };
+
+  const handleDeleteExpense = async (expenseId, amount) => {
+    try {
+      await deleteExpenditure(token, expenseId);
+      mutate();
+    } catch (error) {
+      dispatch({ type: "SET_ERROR", payload: error.message });
+    }
+  };
+
   return (
-    <ExpenseContext.Provider value={{ state, dispatch }}>
+    <ExpenseContext.Provider
+      value={{ state, handleAddExpense, handleDeleteExpense }}
+    >
       {children}
     </ExpenseContext.Provider>
   );
 };
+
+export const useExpense = () => useContext(ExpenseContext);
