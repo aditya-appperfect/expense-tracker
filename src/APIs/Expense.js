@@ -1,12 +1,14 @@
-export const fetchExpenditure = async (params, tag = "all") => {
-  console.log(params)
+const token = JSON.parse(localStorage.getItem("Token"));
+
+export const fetchExpenditure = async (activeFilter) => {
+  console.log(activeFilter);
   try {
     const res = await fetch(
-      `${process.env.REACT_APP_BACKEND_URL}/expenditure/?tag=${tag}`,
+      `${process.env.REACT_APP_BACKEND_URL}/expenditure/?tag=${activeFilter}`,
       {
         method: "GET",
         headers: {
-          Token: params[1],
+          Token: token,
         },
         credentials: "include",
       }
@@ -22,7 +24,7 @@ export const fetchExpenditure = async (params, tag = "all") => {
   }
 };
 
-export const addExpenditure = async (token, newExpense) => {
+export const addExpenditure = async (newExpense) => {
   try {
     const res = await fetch(
       `${process.env.REACT_APP_BACKEND_URL}/expenditure/`,
@@ -48,7 +50,7 @@ export const addExpenditure = async (token, newExpense) => {
   }
 };
 
-export const deleteExpenditure = async (token, expenseId) => {
+export const deleteExpenditure = async (expenseId) => {
   try {
     const res = await fetch(
       `${process.env.REACT_APP_BACKEND_URL}/expenditure/`,

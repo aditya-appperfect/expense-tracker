@@ -7,7 +7,7 @@ import { Input, Spin, Table } from "antd";
 
 function Dashboard() {
   const nav = useNavigate();
-  const { state, dispatch, handleAddExpense, handleDeleteExpense } =
+  const { state, dispatch, handleAddExpense, handleDeleteExpense, setActiveFilter, activeFilter } =
     useContext(ExpenseContext);
 
   useEffect(() => {
@@ -17,7 +17,6 @@ function Dashboard() {
     }
   }, [nav]);
 
-  const [activeFilter, setActiveFilter] = useState("all");
   const [newDetails, setNewDetails] = useState({
     title: "",
     amount: 0,

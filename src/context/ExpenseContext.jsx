@@ -1,4 +1,10 @@
-import React, { createContext, useReducer, useEffect, useContext } from "react";
+import React, {
+  createContext,
+  useReducer,
+  useEffect,
+  useContext,
+  useState,
+} from "react";
 import {
   addExpenditure,
   deleteExpenditure,
@@ -37,11 +43,10 @@ export const ExpenseContext = createContext();
 
 export const ExpenseProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initState);
-
-  const token = JSON.parse(localStorage.getItem("Token"));
+  const [activeFilter, setActiveFilter] = useState("all");
 
   const { isLoading, error, data, mutate } = useSWR(
-    [`${process.env.REACT_APP_BACKEND_URL}/expenditure/`, token],
+    activeFilter,
     fetchExpenditure,
     {
       revalidateOnFocus: false,
@@ -65,12 +70,19 @@ export const ExpenseProvider = ({ children }) => {
 
   const handleAddExpense = async (newExpense) => {
     try {
-      await addExpenditure(token, newExpense);
-      mutate();
-      toast.success("Success! Added new expense.", {
-        duration: 1000,
-        icon: "🎉",
-      });
+      await addExpenditure(newExpense);
+      mutate(
+        activeFilter,
+        async (currentData) => {
+          return {
+            data: {
+              exp: [...currentData.data.exp, newExpense],
+              total: currentData.data.total + newExpense.amount,
+            },
+          };
+        },
+        false
+      );
     } catch (error) {
       toast.error(error.message, {
         duration: 2000,
@@ -80,8 +92,24 @@ export const ExpenseProvider = ({ children }) => {
 
   const handleDeleteExpense = async (expenseId, amount) => {
     try {
-      await deleteExpenditure(token, expenseId);
-      mutate();
+      await deleteExpenditure(expenseId);
+      mutate(
+        activeFilter,
+        async (currentData) => {
+          let deletedData = currentData.data.exp.filter(
+            (exp) => exp.expenseid == expenseId
+          );
+          return {
+            data: {
+              exp: currentData.data.exp.filter(
+                (exp) => exp.expenseid != expenseId
+              ),
+              total: currentData.data.total + deletedData.amount,
+            },
+          };
+        },
+        false
+      );
     } catch (error) {
       dispatch({ type: "SET_ERROR", payload: error.message });
     }
@@ -89,7 +117,13 @@ export const ExpenseProvider = ({ children }) => {
 
   return (
     <ExpenseContext.Provider
-      value={{ state, handleAddExpense, handleDeleteExpense }}
+      value={{
+        state,
+        handleAddExpense,
+        handleDeleteExpense,
+        setActiveFilter,
+        activeFilter,
+      }}
     >
       {children}
     </ExpenseContext.Provider>

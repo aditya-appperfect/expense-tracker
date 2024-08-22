@@ -21,7 +21,7 @@
     "build": "react-scripts build",
     "test": "vitest watch",
     "eject": "react-scripts eject",
-    "db": "npx json-server -w data/db.json -p 3500"
+    "db": "npx json-server -w data/db.json -p 3600"
   },
   "eslintConfig": {
     "extends": [
