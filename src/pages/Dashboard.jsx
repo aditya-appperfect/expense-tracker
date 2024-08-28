@@ -7,8 +7,14 @@ import { Input, Spin, Table } from "antd";
 
 function Dashboard() {
   const nav = useNavigate();
-  const { state, dispatch, handleAddExpense, handleDeleteExpense, setActiveFilter, activeFilter } =
-    useContext(ExpenseContext);
+  const {
+    state,
+    dispatch,
+    handleAddExpense,
+    handleDeleteExpense,
+    setActiveFilter,
+    activeFilter,
+  } = useContext(ExpenseContext);
 
   useEffect(() => {
     const token = JSON.parse(localStorage.getItem("Token"));
