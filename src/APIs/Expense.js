@@ -1,23 +1,22 @@
 const token = JSON.parse(localStorage.getItem("Token"));
-
-export const fetchExpenditure = async (activeFilter) => {
-  console.log(activeFilter);
+export const fetchExpenditure = async ([activeFilter, token]) => {
   try {
-    const res = await fetch(
-      `${process.env.REACT_APP_BACKEND_URL}/expenditure/?tag=${activeFilter}`,
-      {
-        method: "GET",
-        headers: {
-          Token: token,
-        },
-        credentials: "include",
-      }
-    );
-
-    if (!res.ok) {
-      throw new Error(`Error ${res.status}: ${res.statusText}`);
+    const userRoles = JSON.parse(localStorage.getItem("Role"));
+    let url;
+    if (userRoles == "admin") {
+      url = `${process.env.REACT_APP_BACKEND_URL}/expenditure/admin/?tag=${activeFilter}`;
+    } else {
+      url = `${process.env.REACT_APP_BACKEND_URL}/expenditure/?tag=${activeFilter}`;
     }
-    return await res.json();
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        Token: token,
+      },
+      credentials: "include",
+    });
+    const data = await res.json()
+    return data;
   } catch (error) {
     console.error("Failed to fetch expenditure:", error);
     throw error;

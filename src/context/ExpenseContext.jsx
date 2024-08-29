@@ -45,8 +45,9 @@ export const ExpenseProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initState);
   const [activeFilter, setActiveFilter] = useState("all");
 
-  const { isLoading, error, data, mutate } = useSWR(
-    activeFilter,
+  const token = JSON.parse(localStorage.getItem("Token"));
+  const { isLoading, error, data } = useSWR(
+    [activeFilter, token],
     fetchExpenditure,
     {
       revalidateOnFocus: false,
@@ -72,7 +73,7 @@ export const ExpenseProvider = ({ children }) => {
     try {
       await addExpenditure(newExpense);
       mutate(
-        activeFilter,
+        [activeFilter, token],
         async (currentData) => {
           return {
             data: {
@@ -90,11 +91,21 @@ export const ExpenseProvider = ({ children }) => {
     }
   };
 
+  const handleFetchExpense = async () => {
+    try {
+      await mutate([activeFilter, token], fetchExpenditure, true);
+    } catch (error) {
+      toast.error(error.message, {
+        duration: 2000,
+      });
+    }
+  };
+
   const handleDeleteExpense = async (expenseId, amount) => {
     try {
       await deleteExpenditure(expenseId);
       mutate(
-        activeFilter,
+        [activeFilter, token],
         async (currentData) => {
           let deletedData = currentData.data.exp.filter(
             (exp) => exp.expenseid == expenseId
@@ -123,6 +134,7 @@ export const ExpenseProvider = ({ children }) => {
         handleDeleteExpense,
         setActiveFilter,
         activeFilter,
+        handleFetchExpense,
       }}
     >
       {children}

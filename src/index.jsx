@@ -4,10 +4,11 @@ import "./index.css";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 
-import { preload } from 'swr'
-import { getTodo} from './APIs/Todo'
+import { preload } from "swr";
+import { fetchExpenditure } from "./APIs/Expense";
+// const token = JSON.parse(localStorage.getItem("Token"));
 
-// preload(process.env.REACT_APP_API_URL, getTodo)
+// preload(["all", token], fetchExpenditure);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

@@ -4,7 +4,7 @@ import { ExpenseContext } from "../context/ExpenseContext";
 import { useNavigate } from "react-router-dom";
 import { DeleteOutlined } from "@ant-design/icons";
 import { Input, Spin, Table } from "antd";
-
+const userRole = JSON.parse(localStorage.getItem("Role"));
 function Dashboard() {
   const nav = useNavigate();
   const {
@@ -14,10 +14,15 @@ function Dashboard() {
     handleDeleteExpense,
     setActiveFilter,
     activeFilter,
+    handleFetchExpense,
   } = useContext(ExpenseContext);
+  const token = JSON.parse(localStorage.getItem("Token"));
 
   useEffect(() => {
-    const token = JSON.parse(localStorage.getItem("Token"));
+    handleFetchExpense();
+  }, []);
+
+  useEffect(() => {
     if (!token) {
       nav("/auth");
     }
@@ -45,7 +50,6 @@ function Dashboard() {
   const handleDeleteClick = (exp) => {
     handleDeleteExpense(exp.expenseid, exp.amount);
   };
-
   const columns = [
     {
       title: "Id",
@@ -55,6 +59,17 @@ function Dashboard() {
       render: (text, record, index) =>
         record.key !== "Total" ? index + 1 : null,
     },
+    ...(userRole === "admin"
+      ? [
+          {
+            title: "UserId",
+            dataIndex: "userid",
+            key: "userid",
+            width: 70,
+            align: "center",
+          },
+        ]
+      : []),
     {
       title: "Title",
       dataIndex: "title",
@@ -106,59 +121,74 @@ function Dashboard() {
 
   return (
     <div className="container">
-      <h1 className="heading">Expense Tracker</h1>
-      <div className="content">
-        <div className="inputCont">
-          <label>Title</label>
-          <Input
-            type="text"
-            value={newDetails.title}
-            onChange={(e) => {
-              setNewDetails((prev) => ({
-                ...prev,
-                title: e.target.value,
-              }));
-            }}
-            placeholder="Enter Expense title"
-          />
-        </div>
-        <div className="inputCont">
-          <label>Amount:</label>
-          <Input
-            type="number"
-            placeholder="Enter Expense Amount"
-            value={newDetails.amount}
-            onChange={(e) => {
-              setNewDetails((prev) => ({
-                ...prev,
-                amount: e.target.value,
-              }));
-            }}
-          />
-        </div>
-        <div className="inputCont">
-          <label style={{ display: "block" }}>Type:</label>
-          <select
-            className="dropdown"
-            value={newDetails.exptype}
-            onChange={(e) => {
-              setNewDetails((prev) => ({
-                ...prev,
-                exptype: e.target.value,
-              }));
-            }}
-            style={{ fontSize: "large", textAlign: "center" }}
-          >
-            <option value="income">income</option>
-            <option value="expense">expense</option>
-          </select>
-        </div>
-        <div>
-          <button className="button" onClick={handleAddClick}>
-            Add
-          </button>
-        </div>
+      <div style={{ left: "90%", position: "relative", top: "2%" }}>
+        <button
+          className="button"
+          onClick={() => {
+            localStorage.clear();
+            nav("/auth");
+          }}
+        >
+          Logout
+        </button>
       </div>
+      <h1 className="heading">Expense Tracker</h1>
+      {userRole != "admin" ? (
+        <div className="content">
+          <div className="inputCont">
+            <label>Title</label>
+            <Input
+              type="text"
+              value={newDetails.title}
+              onChange={(e) => {
+                setNewDetails((prev) => ({
+                  ...prev,
+                  title: e.target.value,
+                }));
+              }}
+              placeholder="Enter Expense title"
+            />
+          </div>
+          <div className="inputCont">
+            <label>Amount:</label>
+            <Input
+              type="number"
+              placeholder="Enter Expense Amount"
+              value={newDetails.amount}
+              onChange={(e) => {
+                setNewDetails((prev) => ({
+                  ...prev,
+                  amount: e.target.value,
+                }));
+              }}
+            />
+          </div>
+          <div className="inputCont">
+            <label style={{ display: "block" }}>Type:</label>
+            <select
+              className="dropdown"
+              value={newDetails.exptype}
+              onChange={(e) => {
+                setNewDetails((prev) => ({
+                  ...prev,
+                  exptype: e.target.value,
+                }));
+              }}
+              style={{ fontSize: "large", textAlign: "center" }}
+            >
+              <option value="income">income</option>
+              <option value="expense">expense</option>
+            </select>
+          </div>
+          <div>
+            <button className="button" onClick={handleAddClick}>
+              Add
+            </button>
+          </div>
+        </div>
+      ) : (
+        <></>
+      )}
       <div className="tabContainer">
         <span
           className={`tab ${activeFilter === "all" ? "selected" : ""}`}

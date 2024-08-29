@@ -3,6 +3,7 @@ import "../assets/Auth.css";
 import { useNavigate } from "react-router-dom";
 import bcrypt from "bcryptjs-react";
 import { loginUser, signupUser } from "../APIs/Auth";
+import { fetchExpenditure } from "../APIs/Expense";
 
 function Auth() {
   const nav = useNavigate();
@@ -43,6 +44,9 @@ function Auth() {
   const handleLogin = async () => {
     const res = await loginUser(loginCred.email, loginCred.password);
     if (res.status == "success") {
+      if (res.data.role) {
+        localStorage.setItem("Role", JSON.stringify(res.data.role));
+      }
       localStorage.setItem("Token", JSON.stringify(res.Token));
       nav("/");
     } else {
