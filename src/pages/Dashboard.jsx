@@ -227,7 +227,7 @@ function Dashboard() {
           }
           dataSource={getDataSourceWithTotal(state.allExp)} // Use filtered data here
           columns={columns}
-          pagination={{ pageSize: 10, position: ["bottomCenter"] }}
+          pagination={{ pageSize: 6, position: ["bottomCenter"] }}
         />
       )}
     </div>

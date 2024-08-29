@@ -82,7 +82,7 @@ export const ExpenseProvider = ({ children }) => {
             },
           };
         },
-        false
+        true
       );
     } catch (error) {
       toast.error(error.message, {
@@ -119,7 +119,7 @@ export const ExpenseProvider = ({ children }) => {
             },
           };
         },
-        false
+        true
       );
     } catch (error) {
       dispatch({ type: "SET_ERROR", payload: error.message });
