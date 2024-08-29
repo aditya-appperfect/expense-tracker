@@ -15,8 +15,8 @@ export const fetchExpenditure = async ([activeFilter, token]) => {
       },
       credentials: "include",
     });
-    const data = await res.json()
-    return data;
+    const data = await res.json();
+    return data.data;
   } catch (error) {
     console.error("Failed to fetch expenditure:", error);
     throw error;

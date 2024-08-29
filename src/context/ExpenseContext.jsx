@@ -46,22 +46,18 @@ export const ExpenseProvider = ({ children }) => {
   const [activeFilter, setActiveFilter] = useState("all");
 
   const token = JSON.parse(localStorage.getItem("Token"));
-  const { isLoading, error, data } = useSWR(
-    [activeFilter, token],
-    fetchExpenditure,
-    {
-      revalidateOnFocus: false,
-      onSuccess: (data) => {
-        dispatch({
-          type: "SET_EXPENDITURES",
-          payload: { exp: data.data.exp, total: data.data.total },
-        });
-      },
-      onError: (error) => {
-        dispatch({ type: "SET_ERROR", payload: error.message });
-      },
-    }
-  );
+  const { isLoading } = useSWR([activeFilter, token], fetchExpenditure, {
+    revalidateOnFocus: false,
+    onSuccess: (data) => {
+      dispatch({
+        type: "SET_EXPENDITURES",
+        payload: { exp: data.exp, total: data.total },
+      });
+    },
+    onError: (error) => {
+      dispatch({ type: "SET_ERROR", payload: error.message });
+    },
+  });
 
   useEffect(() => {
     if (isLoading) {
@@ -71,18 +67,29 @@ export const ExpenseProvider = ({ children }) => {
 
   const handleAddExpense = async (newExpense) => {
     try {
-      await addExpenditure(newExpense);
-      mutate(
+      addExpenditure(newExpense).then((res) => {
+        if (res instanceof Error) {
+          throw res;
+        }
+      });
+      await mutate(
         [activeFilter, token],
-        async (currentData) => {
-          return {
-            data: {
-              exp: [...currentData.data.exp, newExpense],
-              total: currentData.data.total + newExpense.amount,
+        async (expenses) => {
+          let newAmount = newExpense.amount;
+          dispatch({
+            type: "SET_EXPENDITURES",
+            payload: {
+              exp: [...expenses.exp, newExpense],
+              total: Number(expenses.total) + newAmount,
             },
+          });
+          return {
+            exp: [...expenses.exp, newExpense],
+            total: Number(expenses.total) + newAmount,
           };
         },
-        true
+        { rollbackOnError: true },
+        false
       );
     } catch (error) {
       toast.error(error.message, {
@@ -107,15 +114,13 @@ export const ExpenseProvider = ({ children }) => {
       mutate(
         [activeFilter, token],
         async (currentData) => {
-          let deletedData = currentData.data.exp.filter(
+          let deletedData = currentData.exp.filter(
             (exp) => exp.expenseid == expenseId
           );
           return {
             data: {
-              exp: currentData.data.exp.filter(
-                (exp) => exp.expenseid != expenseId
-              ),
-              total: currentData.data.total + deletedData.amount,
+              exp: currentData.exp.filter((exp) => exp.expenseid != expenseId),
+              total: currentData.total + deletedData.amount,
             },
           };
         },
